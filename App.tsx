@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 const TOAST_CONTAINER_ID = "main-toast";
 
 const App: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [displayedEvents, setDisplayedEvents] = useState<DisplayEvent[]>([]);
 

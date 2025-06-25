@@ -1,5 +1,4 @@
 import React from 'react';
-import { ReactComponent as ChevronLeft } from './chevron-left.svg';
 
 interface ChevronLeftIconProps extends React.SVGProps<SVGSVGElement> {}
 
