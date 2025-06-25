@@ -44,12 +44,12 @@ const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, events, onDayCl
         </span>
       </div>
       <div className="mt-0.5 flex-grow overflow-y-auto space-y-0.5 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        {dayEvents.slice(0, 3).map(event => ( 
+        {dayEvents.slice(0, 2).map(event => ( 
           <EventItem key={`${event.id}-${event.start}`} event={event} onClick={onEventClick} />
         ))}
-        {dayEvents.length > 3 && (
+        {dayEvents.length > 2 && (
           <div className="text-[10px] text-gray-500 mt-0.5" onClick={(e) => { e.stopPropagation(); onDayClick(date); }}>
-            + {dayEvents.length - 3} more
+            + {dayEvents.length - 2} more
           </div>
         )}
       </div>

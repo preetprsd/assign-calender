@@ -4,7 +4,7 @@ export const EVENT_COLORS = [
   { name: 'Blue', value: 'bg-blue-500', text: 'text-blue-50' },
   { name: 'Green', value: 'bg-green-500', text: 'text-green-50' },
   { name: 'Red', value: 'bg-red-500', text: 'text-red-50' },
-  { name: 'Yellow', value: 'bg-yellow-500', text: 'text-yellow-800' }, // Adjusted text for yellow
+  { name: 'Yellow', value: 'bg-yellow-500', text: 'text-yellow-800' },
   { name: 'Purple', value: 'bg-purple-500', text: 'text-purple-50' },
   { name: 'Pink', value: 'bg-pink-500', text: 'text-pink-50' },
   { name: 'Indigo', value: 'bg-indigo-500', text: 'text-indigo-50' },

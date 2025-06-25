@@ -1,35 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { format, parseISO, startOfMonth, endOfMonth, startOfWeek, endOfWeek, set } from 'date-fns';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import CalendarGrid from './components/CalendarGrid';
 import EventModal from './components/EventModal';
 import { Event, DisplayEvent, EventModalProps, RecurrenceFrequency } from './types';
-import { loadEvents, saveEvents, generateEventId, getEventsForDateRangeOptimized, checkConflict } from './services/eventService';
-import { format, parseISO, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isEqual, set } from 'date-fns';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { loadEvents, saveEvents, getEventsForDateRangeOptimized, checkConflict, generateEventId } from './services/eventService';
 
-const TOAST_CONTAINER_ID = 'main-toast';
+const TOAST_CONTAINER_ID = 'app-toast';
 
 const App: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<Event[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [displayedEvents, setDisplayedEvents] = useState<DisplayEvent[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<DisplayEvent | null>(null);
   const [selectedDateForModal, setSelectedDateForModal] = useState<Date | null>(null);
-  const [draggedEventState, setDraggedEventState] = useState<DisplayEvent | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [draggedEventState, setDraggedEventState] = useState<DisplayEvent | null>(null);
   const [showDragConflictModal, setShowDragConflictModal] = useState(false);
-  const [pendingDragUpdate, setPendingDragUpdate] = useState<{
-    updatedEventsList: Event[];
-    eventForConflictCheck: Event;
-  } | null>(null);
-
+  const [pendingDragUpdate, setPendingDragUpdate] = useState<{ updatedEventsList: Event[], eventForConflictCheck: Event } | null>(null);
 
   useEffect(() => {
-    setEvents(loadEvents());
+    const savedEvents = loadEvents();
+    setEvents(savedEvents);
   }, []);
 
   useEffect(() => {
@@ -38,7 +35,6 @@ const App: React.FC = () => {
     setDisplayedEvents(getEventsForDateRangeOptimized(events, monthViewStart, monthViewEnd));
   }, [events, currentDate]);
 
-  // Monitor category filter changes and show toast if no events found
   useEffect(() => {
     if (categoryFilter && categoryFilter !== '') {
       const eventsWithCategory = displayedEvents.filter(event => event.category === categoryFilter);
@@ -51,11 +47,34 @@ const App: React.FC = () => {
     }
   }, [categoryFilter, displayedEvents]);
 
+  useEffect(() => {
+    if (searchQuery && searchQuery.trim() !== '') {
+      const eventsWithSearch = displayedEvents.filter(event => 
+        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (event.description && event.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+      if (eventsWithSearch.length === 0) {
+        toast.info(`No events found matching "${searchQuery}" in the current month.`, {
+          containerId: TOAST_CONTAINER_ID,
+          autoClose: 4000,
+        });
+      }
+    }
+  }, [searchQuery, displayedEvents]);
+
   const handleDateChange = useCallback((newDate: Date) => {
     setCurrentDate(newDate);
   },[]);
 
   const handleDayClick = useCallback((date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const clickedDate = new Date(date);
+    clickedDate.setHours(0, 0, 0, 0);
+    if (clickedDate < today) {
+      toast.error("Selected date is in the past, not allowed to add event", { containerId: TOAST_CONTAINER_ID });
+      return;
+    }
     setSelectedDateForModal(date);
     setEventToEdit(null);
     setIsModalOpen(true);
@@ -85,26 +104,22 @@ const App: React.FC = () => {
       const originalEventSeries = events.find(e => e.id === eventDataFromModal.id);
       if (!originalEventSeries) return;
 
-      // Check if we are editing an instance of a recurring event
-      // eventDataFromModal.isInstance will be true if EventModal passed it correctly
-      // eventToEdit also holds the original DisplayEvent context
+     
       if (eventDataFromModal.isInstance && originalEventSeries.recurrenceRule && originalEventSeries.recurrenceRule.frequency !== RecurrenceFrequency.NONE) {
-        // This means we are modifying a specific occurrence of a recurring event.
-        // It becomes a new standalone event, and an exception is added to the original series.
+       
         finalEventToSave = {
-          ...eventDataFromModal, // Contains new start/end, title etc. from modal
+          ...eventDataFromModal, 
           id: generateEventId(), 
           recurrenceRule: undefined, 
           originalSeriesId: originalEventSeries.id, 
           exceptionDates: [], 
-          isInstance: false, // It's now a standalone event, not an "instance" in the recurring sense
-          // instanceDate is already set by eventDataFromModal from the modal
+          isInstance: false, 
         };
         
-        const originalInstanceOfRecurringEventDate = eventToEdit?.instanceDate; // Date of the instance that was opened in modal
+        const originalInstanceOfRecurringEventDate = eventToEdit?.instanceDate; 
         if (!originalInstanceOfRecurringEventDate) {
             toast.error("Could not determine original instance date for creating exception.", { containerId: TOAST_CONTAINER_ID });
-            return; // Or handle error appropriately
+            return; 
         }
 
         const updatedOriginalSeries = {
@@ -114,7 +129,7 @@ const App: React.FC = () => {
         updatedEvents = events.map(e => e.id === originalEventSeries.id ? updatedOriginalSeries : e);
         updatedEvents.push(finalEventToSave);
       } else {
-        // Editing a non-recurring event or the master definition of a recurring series
+        
         finalEventToSave = { ...eventDataFromModal }; 
          if (checkConflict(finalEventToSave, events, monthViewStart, monthViewEnd)) {
             toast.info("This event conflicts with an existing event. Save anyway?", {
@@ -123,12 +138,12 @@ const App: React.FC = () => {
               onClose: () => {},
               containerId: TOAST_CONTAINER_ID,
             });
-            // You can implement a custom modal for confirmation if needed
+          
             return;
         }
         updatedEvents = events.map(e => (e.id === finalEventToSave.id ? finalEventToSave : e));
       }
-    } else { // Adding a new event
+    } else { 
       finalEventToSave = { ...eventDataFromModal, id: generateEventId() };
        if (checkConflict(finalEventToSave, events, monthViewStart, monthViewEnd)) {
             toast.info("This event conflicts with an existing event. Save anyway?", {
@@ -137,7 +152,7 @@ const App: React.FC = () => {
               onClose: () => {},
               containerId: TOAST_CONTAINER_ID,
             });
-            // You can implement a custom modal for confirmation if needed
+           
             return;
         }
       updatedEvents = [...events, finalEventToSave];
@@ -176,7 +191,7 @@ const App: React.FC = () => {
   }, [events, handleModalClose]);
 
   const handleEventDrop = useCallback((newDateOnCalendar: Date, droppedEvent?: DisplayEvent) => {
-    // Use the dropped event if provided, otherwise fall back to draggedEventState
+   
     const eventToMove = droppedEvent || draggedEventState;
     if (!eventToMove) return;
     
@@ -222,7 +237,7 @@ const App: React.FC = () => {
         start: newStartDateTime.toISOString(),
         end: newEndDateTime.toISOString(),
         instanceDate: format(newStartDateTime, 'yyyy-MM-dd'),
-        isInstance: false, // Explicitly false for non-recurring or master event
+        isInstance: false, 
       };
       eventForConflictCheck = updatedNonRecurringEvent;
       updatedEventsList = updatedEventsList.map(e => e.id === originalEventSeries.id ? updatedNonRecurringEvent : e);
@@ -255,7 +270,7 @@ const App: React.FC = () => {
     setShowDragConflictModal(false);
   };
 
-  // Filter events by search and category
+ 
   const filteredEvents = displayedEvents.filter(event => {
     const matchesCategory = !categoryFilter || event.category === categoryFilter;
     const matchesSearch = !searchQuery ||
@@ -264,6 +279,17 @@ const App: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
+  const allEventsForSelectedDay = selectedDateForModal
+    ? displayedEvents.filter(event =>
+        event.instanceDate &&
+        new Date(event.instanceDate).toDateString() === selectedDateForModal.toDateString()
+      )
+    : [];
+
+  const handleModalEventClick = (event: DisplayEvent) => {
+    setEventToEdit(event);
+  };
+
   const modalProps: EventModalProps = {
     isOpen: isModalOpen,
     onClose: handleModalClose,
@@ -271,6 +297,8 @@ const App: React.FC = () => {
     onDelete: handleDeleteEvent,
     eventToEdit: eventToEdit,
     selectedDate: selectedDateForModal,
+    allEventsForDay: allEventsForSelectedDay,
+    onEventClick: handleModalEventClick,
   };
 
   return (

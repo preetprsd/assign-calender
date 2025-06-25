@@ -80,7 +80,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             {day}
           </div>
         ))}
-        {days.map(day => (
+        {days.map((day: Date) => (
           <DayCell
             key={day.toString()}
             date={day}

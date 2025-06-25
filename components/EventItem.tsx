@@ -26,7 +26,7 @@ const EventItem: React.FC<EventItemProps> = ({ event, onClick }) => {
   return (
     <div
       ref={ref}
-      onClick={(e) => { e.stopPropagation(); onClick(event);}} // Stop propagation to prevent DayCell click
+      onClick={(e) => { e.stopPropagation(); onClick(event);}}
       className={`p-1.5 mb-1 rounded-md text-xs cursor-move hover:opacity-80 transition-all duration-200 ${eventColorStyle.value} ${eventColorStyle.text} overflow-hidden whitespace-nowrap text-ellipsis ${isDragging ? 'opacity-30 scale-95 shadow-lg' : ''}`}
       title={`${event.title} - ${format(parseISO(event.start), 'p')} to ${format(parseISO(event.end), 'p')}`}
     >

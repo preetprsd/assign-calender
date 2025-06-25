@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Event, DisplayEvent, EventModalProps, RecurrenceFrequency, RecurrenceRule } from '../types';
-import { EVENT_COLORS, RECURRENCE_OPTIONS, DAYS_OF_WEEK, FULL_DAYS_OF_WEEK } from '../constants';
+import { Event, EventModalProps, RecurrenceFrequency, RecurrenceRule } from '../types';
+import { EVENT_COLORS, RECURRENCE_OPTIONS,  FULL_DAYS_OF_WEEK } from '../constants';
 import { format, parseISO, isValid, set, getDay, getDate } from 'date-fns';
 import TrashIcon from './icons/TrashIcon';
 import XMarkIcon from './icons/XMarkIcon';
@@ -17,6 +17,8 @@ const EventModal: React.FC<EventModalProps> = ({
   onDelete,
   eventToEdit, 
   selectedDate,
+  allEventsForDay,
+  onEventClick,
 }) => {
   const getInitialEventState = useCallback(() => {
     const baseDate = selectedDate || new Date();
@@ -54,8 +56,8 @@ const EventModal: React.FC<EventModalProps> = ({
         end: format(parseISO(eventToEdit.end), "yyyy-MM-dd'T'HH:mm"),     
         recurrenceRule: eventToEdit.recurrenceRule || getInitialEventState().recurrenceRule,
         exceptionDates: eventToEdit.exceptionDates || [],
-        isInstance: eventToEdit.isInstance, // Explicitly carry over from DisplayEvent
-        instanceDate: eventToEdit.instanceDate, // Explicitly carry over from DisplayEvent
+        isInstance: eventToEdit.isInstance,
+        instanceDate: eventToEdit.instanceDate,
       });
     } else {
       setEvent(getInitialEventState());
@@ -134,23 +136,24 @@ const EventModal: React.FC<EventModalProps> = ({
       description: event.description,
       color: event.color,
       exceptionDates: event.exceptionDates || [],
-      originalSeriesId: event.originalSeriesId, // This would be on event if it's a modified instance
+      originalSeriesId: event.originalSeriesId,
       start: startDate.toISOString(),
       end: endDate.toISOString(),
       recurrenceRule: event.recurrenceRule?.frequency === RecurrenceFrequency.NONE ? undefined : event.recurrenceRule,
       instanceDate: event.instanceDate || format(startDate, 'yyyy-MM-dd'),
-      isInstance: event.isInstance, // Pass this from the modal's state
+      isInstance: event.isInstance,
       category: event.category || '',
     };
     onSave(finalEvent);
+    toast.success("Event saved successfully!", { containerId: TOAST_CONTAINER_ID });
     onClose();
   };
 
   const handleDeleteClick = (deleteType?: 'instance' | 'series') => {
     if (onDelete && eventToEdit?.id) {
-        // eventToEdit is DisplayEvent, so instanceDate is available and correctly typed
         const instanceDateForDelete = eventToEdit.isInstance ? eventToEdit.instanceDate : undefined;
         onDelete(eventToEdit.id, deleteType, instanceDateForDelete);
+        toast.success("Event deleted successfully!", { containerId: TOAST_CONTAINER_ID });
         setShowDeleteConfirmation(false);
         onClose();
     }
@@ -170,6 +173,26 @@ const EventModal: React.FC<EventModalProps> = ({
             <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
+
+        {/* Show all events for the day if more than 1 event exists */}
+        {allEventsForDay && allEventsForDay.length > 1 && (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2 text-gray-700">Events for this day</h3>
+            <ul className="space-y-1">
+              {allEventsForDay.map(ev => (
+                <li
+                  key={ev.id + ev.start}
+                  className="p-2 rounded bg-gray-100 flex flex-col cursor-pointer hover:bg-blue-100"
+                  onClick={() => onEventClick && onEventClick(ev)}
+                >
+                  <span className="font-medium text-gray-800">{ev.title}</span>
+                  <span className="text-xs text-gray-500">{format(parseISO(ev.start), 'p')} - {format(parseISO(ev.end), 'p')}</span>
+                  {ev.description && <span className="text-xs text-gray-600">{ev.description}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -301,7 +324,6 @@ const EventModal: React.FC<EventModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Custom recurrence UI */}
                     {event.recurrenceRule.frequency === RecurrenceFrequency.CUSTOM && (
                         <div className="flex items-center space-x-2">
                             <input
