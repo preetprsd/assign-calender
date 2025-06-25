@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/react-dnd": "^2.0.36",
+    "@types/react-dnd-html5-backend": "^3.0.2",
+    "@types/react-toastify": "^4.0.2",
     "date-fns": "^4.1.0",
     "react": "^19.1.0",
     "react-dnd": "^16.0.1",
