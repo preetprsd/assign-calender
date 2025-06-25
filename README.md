@@ -1,35 +1,58 @@
-# Event Calendar
+# Interactive Event Calendar
 
-This contains everything you need to run your app locally.
+A modern, interactive calendar web app for managing and scheduling events with drag-and-drop, recurring events, and more.
+
+## Prerequisites
+
+- **Node.js** (v18 or newer recommended)
+- **npm** (v9 or newer) or **yarn**
+
+## Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd <project-directory>
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. **Open the app:**
+   Visit [http://localhost:5173](http://localhost:5173) (or the port shown in your terminal) in your browser.
 
 ## Features
+- Month view calendar
+- Add, edit, and delete events
+- Drag and drop events to different days (future days only)
+- Recurring events support
+- Category and search filtering
+- Responsive design
 
-- **Interactive Calendar**: View and manage events in a monthly calendar view
-- **Drag and Drop**: Move events between dates using React DnD
-- **Event Management**: Create, edit, and delete events with recurring options
-- **Search and Filter**: Search events by title/description and filter by category
-- **Conflict Detection**: Automatic detection of event conflicts
-- **Responsive Design**: Works on desktop and mobile devices
+## Tech Stack
+- React 19
+- TypeScript
+- Vite
+- date-fns
+- react-dnd
+- react-toastify
+- Tailwind CSS (via CDN)
 
-## Drag and Drop Implementation
+## Notes
+- Events are stored in your browser's local storage.
+- You cannot add or move events to past days.
+- Toast notifications are used for feedback and errors.
 
-The calendar uses **React DnD** for smooth drag and drop functionality:
-
-- **Drag Source**: Events are draggable using the `useDrag` hook
-- **Drop Target**: Calendar cells accept drops using the `useDrop` hook
-- **Visual Feedback**: Drag and drop operations provide visual feedback
-- **Conflict Handling**: Automatic conflict detection when dropping events
-
-### Dependencies
-
-- `react-dnd`: Core drag and drop functionality
-- `react-dnd-html5-backend`: HTML5 backend for drag and drop
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-1. Install dependencies:
-   `npm install`
-2. Run the app:
-   `npm run dev`
+## License
+MIT
