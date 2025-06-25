@@ -50,7 +50,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       <div className="flex items-center justify-between mb-2">
         <button
           onClick={prevMonth}
-          className="p-1.5 rounded-full hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-800"
+          className="p-1.5 rounded-full bg-yellow-500 hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-800"
           aria-label="Previous month"
         >
           <ChevronLeftIcon className="h-5 w-5" />
@@ -61,14 +61,14 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             </h2>
             <button 
                 onClick={goToToday}
-                className="text-sm text-black hover:text-blue-800 font-medium"
+                className="text-sm text-white hover:text-blue-800 font-medium"
             >
                 Go to Today
             </button>
         </div>
         <button
           onClick={nextMonth}
-          className="p-1.5 rounded-full hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-800"
+          className="p-1.5 rounded-full bg-yellow-500 hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-800"
           aria-label="Next month"
         >
           <ChevronRightIcon className="h-5 w-5" />
@@ -76,7 +76,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       </div>
       <div className="grid grid-cols-7 gap-px border border-red-200 bg-red-200 flex-grow">
         {DAYS_OF_WEEK.map(day => (
-          <div key={day} className="py-1 text-center text-[10px] sm:text-xs font-semibold text-gray-600 bg-indigo-100">
+          <div key={day} className="py-1 text-center text-[10px] sm:text-xs font-semibold text-gray-600 bg-indigo-300">
             {day}
           </div>
         ))}
@@ -89,6 +89,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             onDayClick={onDayClick}
             onEventClick={onEventClick}
             onEventDrop={onEventDrop}
+            
           />
         ))}
       </div>

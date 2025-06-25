@@ -132,7 +132,7 @@ const App: React.FC = () => {
         
         finalEventToSave = { ...eventDataFromModal }; 
          if (checkConflict(finalEventToSave, events, monthViewStart, monthViewEnd)) {
-            toast.info("This event conflicts with an existing event. Save anyway?", {
+            toast.info("This event conflicts with an existing event.", {
               autoClose: false,
               closeOnClick: true,
               onClose: () => {},
@@ -146,7 +146,7 @@ const App: React.FC = () => {
     } else { 
       finalEventToSave = { ...eventDataFromModal, id: generateEventId() };
        if (checkConflict(finalEventToSave, events, monthViewStart, monthViewEnd)) {
-            toast.info("This event conflicts with an existing event. Save anyway?", {
+            toast.info("This event conflicts with an existing event.", {
               autoClose: false,
               closeOnClick: true,
               onClose: () => {},
@@ -385,9 +385,7 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-         <footer className="text-center text-xs text-gray-500 py-4">
-         Note: Event data is stored in your browser's local storage.
-        </footer>
+         
       </div>
     </DndProvider>
   );
