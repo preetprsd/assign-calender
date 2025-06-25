@@ -1,15 +1,18 @@
-import { Event, RecurrenceFrequency,  DisplayEvent } from '../types.ts';
-import { LOCAL_STORAGE_EVENTS_KEY } from '../constants.ts';
+import { Event, RecurrenceFrequency, RecurrenceRule, DisplayEvent } from '../types';
+import { LOCAL_STORAGE_EVENTS_KEY } from '../constants';
 import { 
   addDays, 
   addMonths, 
   addWeeks, 
   addYears,
+  eachDayOfInterval, 
+  endOfMonth, 
   format, 
   isAfter, 
   isBefore, 
   isSameDay, 
   parseISO, 
+  startOfMonth,
   getDay,
   getDate,
   isWithinInterval,

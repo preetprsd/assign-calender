@@ -1,69 +1,35 @@
-# React + TypeScript + Vite
+# Event Calendar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This contains everything you need to run your app locally.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Interactive Calendar**: View and manage events in a monthly calendar view
+- **Drag and Drop**: Move events between dates using React DnD
+- **Event Management**: Create, edit, and delete events with recurring options
+- **Search and Filter**: Search events by title/description and filter by category
+- **Conflict Detection**: Automatic detection of event conflicts
+- **Responsive Design**: Works on desktop and mobile devices
 
-## Expanding the ESLint configuration
+## Drag and Drop Implementation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The calendar uses **React DnD** for smooth drag and drop functionality:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Drag Source**: Events are draggable using the `useDrag` hook
+- **Drop Target**: Calendar cells accept drops using the `useDrop` hook
+- **Visual Feedback**: Drag and drop operations provide visual feedback
+- **Conflict Handling**: Automatic conflict detection when dropping events
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Dependencies
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `react-dnd`: Core drag and drop functionality
+- `react-dnd-html5-backend`: HTML5 backend for drag and drop
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Run Locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Prerequisites:**  Node.js
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Install dependencies:
+   `npm install`
+2. Run the app:
+   `npm run dev`

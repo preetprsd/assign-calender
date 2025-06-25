@@ -1,13 +1,14 @@
-import path from "path";
-import { defineConfig } from "vite";
+import path from 'path';
+import { defineConfig} from 'vite';
 
 export default defineConfig(() => {
-  return {
-    define: {},
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "."),
-      },
-    },
-  };
+    // const env = loadEnv(mode, '.', '');
+    return {
+      define: {},
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, '.'),
+        }
+      }
+    };
 });

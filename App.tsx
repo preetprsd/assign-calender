@@ -290,7 +290,40 @@ const App: React.FC = () => {
         <header className="mb-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800">Event Calendar</h1>
         </header>
-        
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-2">
+          <div className="relative w-full sm:w-[300px]">
+            <input
+              type="text"
+              placeholder="Search events or categories..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full px-3 py-2 border border-red-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm pr-8"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 focus:outline-none"
+                aria-label="Clear search"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={e => setCategoryFilter(e.target.value)}
+            className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+            <option value="">All Categories</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Holiday">Holiday</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
         <main className="flex-grow overflow-hidden">
           <CalendarGrid
             currentDate={currentDate}

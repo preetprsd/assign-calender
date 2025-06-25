@@ -1,19 +1,16 @@
 {
-  "name": "temp-vite-project",
+  "name": "interactive-event-calendar",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/react-dnd": "^2.0.36",
-    "@types/react-dnd-html5-backend": "^3.0.2",
-    "@types/react-toastify": "^4.0.2",
     "date-fns": "^4.1.0",
+    "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -21,17 +18,10 @@
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
+    "@types/node": "^22.14.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.5.2",
-    "eslint": "^9.29.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.2.0",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.34.1",
-    "vite": "^7.0.0",
-    "vite-plugin-svgr": "^4.3.0"
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
   }
 }
