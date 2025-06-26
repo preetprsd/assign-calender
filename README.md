@@ -24,6 +24,7 @@ A modern, interactive calendar web app for managing and scheduling events with d
 
 3. **Start the development server:**
    ```bash
+   npm run build
    npm run dev
    # or
    yarn dev
